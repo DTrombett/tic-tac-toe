@@ -1,0 +1,15 @@
+body {
+	font: 28px "Century Gothic", Futura, sans-serif;
+	margin: 20px;
+	color: #d0d0d0;
+}
+
+html {
+	overflow-y: hidden;
+	background-color: #202020;
+}
+
+ol,
+ul {
+	padding-left: 30px;
+}

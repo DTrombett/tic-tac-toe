@@ -1,0 +1,24 @@
+.square {
+	background: inherit;
+	border: 1px solid #a0a0a0;
+	color: inherit;
+	float: left;
+	font-size: 48px;
+	font-weight: bold;
+	line-height: 68px;
+	height: 68px;
+	margin-right: -1px;
+	margin-top: -1px;
+	padding: 0;
+	text-align: center;
+	width: 68px;
+}
+
+.square:hover {
+	background: #191919;
+}
+
+.square:focus {
+	outline: none;
+	background: #101010;
+}
