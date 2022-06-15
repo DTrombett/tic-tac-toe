@@ -50,20 +50,35 @@ class Board extends Component {
 						? `Winner: ${winner}`
 						: `Next player: ${this.state.xIsNext ? "X" : "O"}`}
 				</div>
-				<div className={styles.boardRow}>
-					{this.renderSquare(0)}
-					{this.renderSquare(1)}
-					{this.renderSquare(2)}
+				<div>
+					<div className={styles.boardRow}>
+						{this.renderSquare(0)}
+						{this.renderSquare(1)}
+						{this.renderSquare(2)}
+					</div>
+					<div className={styles.boardRow}>
+						{this.renderSquare(3)}
+						{this.renderSquare(4)}
+						{this.renderSquare(5)}
+					</div>
+					<div className={styles.boardRow}>
+						{this.renderSquare(6)}
+						{this.renderSquare(7)}
+						{this.renderSquare(8)}
+					</div>
 				</div>
-				<div className={styles.boardRow}>
-					{this.renderSquare(3)}
-					{this.renderSquare(4)}
-					{this.renderSquare(5)}
-				</div>
-				<div className={styles.boardRow}>
-					{this.renderSquare(6)}
-					{this.renderSquare(7)}
-					{this.renderSquare(8)}
+				<div className={`buttons ${styles.buttons}`}>
+					<button
+						className={`${styles.actionButton} button`}
+						onClick={() => {
+							this.setState({
+								squares: Array(9).fill(null),
+								xIsNext: true,
+							});
+						}}
+					>
+						Reset
+					</button>
 				</div>
 			</div>
 		);
