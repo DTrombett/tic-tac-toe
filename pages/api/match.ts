@@ -49,7 +49,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		}
 		toReply = res;
 		req.socket.on("close", () => {
-			toReply = null;
+			if (res === toReply) toReply = null;
 		});
 		req.socket.setTimeout(0);
 		return;
@@ -79,10 +79,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	squares[i] = nextPlayer;
 	if (calculateWinner(squares) !== null) {
 		res.status(200).json({
-			winner: nextPlayer,
+			winner: index,
 		});
 		toReply?.status(200).json({
-			winner: nextPlayer,
+			winner: index,
 			square: i,
 		});
 		squares.fill(null);
@@ -111,7 +111,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	else pendingSquare = i;
 	toReply = res;
 	req.socket.on("close", () => {
-		toReply = null;
+		if (res === toReply) toReply = null;
 	});
 	req.socket.setTimeout(0);
 };

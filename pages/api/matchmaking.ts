@@ -26,7 +26,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	toReply = res;
 	req.socket.on("close", () => {
-		toReply = null;
+		if (res === toReply) toReply = null;
 	});
 	req.socket.setTimeout(0);
 };

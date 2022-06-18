@@ -13,7 +13,11 @@ const lines = [
 
 const calculateWinner = (squares: SquareValue[]) => {
 	for (const [a, b, c] of lines)
-		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c])
+		if (
+			squares[a] !== null &&
+			squares[a] === squares[b] &&
+			squares[a] === squares[c]
+		)
 			return squares[a];
 	return null;
 };
