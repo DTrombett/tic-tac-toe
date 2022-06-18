@@ -7,6 +7,7 @@ let playing = false;
 let nextPlayer = false;
 let toReply: NextApiResponse | null = null;
 let pendingSquare: number | null = null;
+let callback: (() => void) | null = null;
 
 export const setIds = () => {
 	ids[0] = Math.random();
@@ -48,9 +49,12 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			return;
 		}
 		toReply = res;
-		req.socket.on("close", () => {
-			if (res === toReply) toReply = null;
-		});
+		req.socket.once(
+			"close",
+			(callback = () => {
+				if (res === toReply) toReply = null;
+			})
+		);
 		req.socket.setTimeout(0);
 		return;
 	}
@@ -87,6 +91,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		squares.fill(null);
 		playing = nextPlayer = false;
+		if (callback) toReply?.removeListener("close", callback);
 		toReply = null;
 		return;
 	}
@@ -100,6 +105,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		squares.fill(null);
 		playing = nextPlayer = false;
+		if (callback) toReply?.removeListener("close", callback);
 		toReply = null;
 		return;
 	}
@@ -109,10 +115,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			square: i,
 		});
 	else pendingSquare = i;
+	if (callback) toReply?.removeListener("close", callback);
 	toReply = res;
-	req.socket.on("close", () => {
-		if (res === toReply) toReply = null;
-	});
+	req.socket.once(
+		"close",
+		(callback = () => {
+			if (res === toReply) toReply = null;
+		})
+	);
 	req.socket.setTimeout(0);
 };
 

@@ -5,7 +5,15 @@
 }
 
 .status {
+	text-align: center;
 	margin-bottom: 20px;
+}
+
+.squares {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .buttons {
@@ -19,6 +27,7 @@
 .actionButton {
 	background-color: #363636;
 	color: inherit !important;
+	border-color: transparent !important;
 }
 
 .actionButton:hover {

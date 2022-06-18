@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getPlaying, setIds, setPlaying } from "./match";
 
 let toReply: NextApiResponse | null = null;
+let callback: (() => void) | null = null;
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	if (toReply) {
@@ -15,6 +16,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			id: ids[1],
 			x: false,
 		});
+		if (callback) toReply.removeListener("close", callback);
 		toReply = null;
 		return;
 	}
@@ -25,9 +27,12 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		return;
 	}
 	toReply = res;
-	req.socket.on("close", () => {
-		if (res === toReply) toReply = null;
-	});
+	req.socket.once(
+		"close",
+		(callback = () => {
+			if (res === toReply) toReply = null;
+		})
+	);
 	req.socket.setTimeout(0);
 };
 

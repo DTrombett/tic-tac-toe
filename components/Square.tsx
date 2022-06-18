@@ -7,7 +7,7 @@ const Square = (props: {
 	value: SquareValue;
 }) => (
 	<button className={styles.square} onClick={props.onClick}>
-		{props.value}
+		{props.value === null ? "" : props.value ? "O" : "X"}
 	</button>
 );
 
