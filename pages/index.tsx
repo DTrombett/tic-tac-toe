@@ -8,7 +8,9 @@ class Game extends Component {
 	constructor(props: Record<string, never>) {
 		super(props);
 
-		fetch("/api/match").catch(() => {
+		fetch("/api/match", {
+			keepalive: true,
+		}).catch(() => {
 			// Just load the match endpoint
 		});
 	}

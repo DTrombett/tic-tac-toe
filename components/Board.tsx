@@ -1,37 +1,11 @@
 import { Component } from "react";
-import type { SquareValue } from "../types";
+import calculateWinner from "../lib/calculateWinner";
+import type { FinishedState, IdleState, PlayingState, State } from "../types";
 import styles from "./Board.module.css";
 import Square from "./Square";
 
-type State<T> = BaseState & T;
-
-type BaseState = {
-	squares: SquareValue[];
-};
-type PlayingState = {
-	myTurn: boolean;
-	winner?: undefined;
-	id: number;
-	isX: boolean;
-	error?: undefined;
-};
-type FinishedState = {
-	myTurn?: undefined;
-	winner: SquareValue;
-	id?: undefined;
-	isX: boolean;
-	error?: undefined;
-};
-type IdleState = {
-	myTurn?: undefined;
-	winner?: undefined;
-	id?: undefined;
-	isX?: undefined;
-	error?: string;
-};
-
 class Board extends Component {
-	state: State<FinishedState> | State<IdleState> | State<PlayingState>;
+	state: State<FinishedState | IdleState | PlayingState>;
 
 	constructor(props: Record<string, never>) {
 		super(props);
@@ -82,7 +56,6 @@ class Board extends Component {
 				squares: newSquares,
 				myTurn: undefined,
 				winner: data.winner === null ? null : Boolean(data.winner),
-				id: undefined,
 			});
 	}
 
@@ -90,12 +63,11 @@ class Board extends Component {
 		switch (res.status) {
 			case 503:
 				this.setState({
-					squares: Array(9).fill(null),
 					myTurn: undefined,
 					winner: undefined,
 					id: undefined,
 					isX: undefined,
-					error: "Partita non trovata!",
+					message: "Partita non trovata!",
 				});
 				break;
 			case 400:
@@ -125,10 +97,17 @@ class Board extends Component {
 		const squares = this.state.squares.slice();
 
 		squares[i] = !this.state.isX;
-		this.setState({
-			squares,
-			myTurn: false,
-		});
+		if (calculateWinner(squares) === null)
+			this.setState({
+				squares,
+				myTurn: false,
+			});
+		else
+			this.setState({
+				squares,
+				myTurn: undefined,
+				winner: !this.state.isX,
+			});
 		fetch("/api/match", {
 			method: "POST",
 			headers: {
@@ -162,12 +141,17 @@ class Board extends Component {
 							? "Tocca a te!"
 							: "In attesa del tuo avversario..."
 						: this.isFinished()
-						? this.state.winner === null
-							? "Pareggio!"
-							: this.state.winner === !this.state.isX
-							? "Hai vinto!"
-							: "Hai perso!"
-						: this.state.error ??
+						? (this.state.winner === null
+								? "Pareggio!"
+								: this.state.winner === !this.state.isX
+								? "Hai vinto!"
+								: "Hai perso!") +
+						  (this.state.matchmaking
+								? "\nCercando un altro avversario..."
+								: "")
+						: this.state.matchmaking
+						? "Cercando un avversario..."
+						: this.state.message ??
 						  "Clicca il pulsante per iniziare una nuova partita online!"}
 				</div>
 				{!this.isIdle() && (
@@ -190,22 +174,25 @@ class Board extends Component {
 					</div>
 				)}
 				<div className={`buttons ${styles.buttons}`}>
-					{!this.isPlaying() && (
+					{!(this.isPlaying() || this.state.matchmaking) && (
 						<button
 							className={`${styles.actionButton} button`}
 							onClick={() => {
+								this.setState({
+									matchmaking: true,
+								});
 								fetch("/api/matchmaking", {
 									keepalive: true,
 								})
 									.then((res) => {
 										if (res.status === 200) return res.json();
 										this.setState({
-											squares: Array(9).fill(null),
 											myTurn: undefined,
 											winner: undefined,
 											id: undefined,
 											isX: undefined,
-											error: "Un'altra partita è già in corso!",
+											message: "Un'altra partita è già in corso!",
+											matchmaking: undefined,
 										});
 										return undefined;
 									})
@@ -217,7 +204,8 @@ class Board extends Component {
 											winner: undefined,
 											id: data.id,
 											isX: data.x,
-											error: undefined,
+											message: undefined,
+											matchmaking: undefined,
 										});
 										if (!data.x)
 											return fetch("/api/match", {
