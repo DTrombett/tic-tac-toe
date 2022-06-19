@@ -12,6 +12,7 @@
 	"bugs": {
 		"url": "https://github.com/DTrombett/tic-tac-toe/issues"
 	},
+	"license": "MIT",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
