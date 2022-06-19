@@ -21,23 +21,29 @@ export const setPlaying = () => {
 };
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
-	if (req.method !== "POST") {
-		res.status(405).json({
-			error: "Method not allowed",
-		});
-		return;
-	}
-	if (!playing) {
-		res.status(503).json({
-			error: "Game not started",
-		});
-		return;
-	}
 	const index = ids.indexOf(Number(req.headers.id));
 
 	if (index === -1) {
 		res.status(403).json({
 			error: "Invalid ID",
+		});
+		return;
+	}
+	if (req.method === "DELETE") {
+		res.status(204).end();
+		toReply?.status(200).json({
+			winner: !index,
+		});
+		if (callback) toReply?.removeListener("close", callback);
+		ids.fill(null);
+		squares.fill(null);
+		toReply = null;
+		playing = nextPlayer = false;
+		return;
+	}
+	if (req.method !== "POST") {
+		res.status(405).json({
+			error: "Method not allowed",
 		});
 		return;
 	}
@@ -83,10 +89,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	squares[i] = nextPlayer;
 	if (calculateWinner(squares) !== null) {
 		res.status(200).json({
-			winner: index,
+			winner: nextPlayer,
 		});
 		toReply?.status(200).json({
-			winner: index,
+			winner: nextPlayer,
 			square: i,
 		});
 		squares.fill(null);
@@ -103,10 +109,11 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			winner: null,
 			square: i,
 		});
-		squares.fill(null);
-		playing = nextPlayer = false;
 		if (callback) toReply?.removeListener("close", callback);
+		ids.fill(null);
+		squares.fill(null);
 		toReply = null;
+		playing = nextPlayer = false;
 		return;
 	}
 	nextPlayer = !nextPlayer;

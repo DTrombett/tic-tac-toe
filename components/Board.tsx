@@ -37,10 +37,7 @@ class Board extends Component {
 	}
 
 	handleIncomingData(
-		data:
-			| { square: number; winner?: undefined }
-			| { winner: 0 | 1 | null; square?: number }
-			| undefined
+		data: { winner?: 0 | 1 | null; square?: number } | undefined
 	) {
 		if (data === undefined) return;
 		const newSquares = this.state.squares.slice();
@@ -61,13 +58,10 @@ class Board extends Component {
 
 	async handleSquareResponse(res: Response, i?: number) {
 		switch (res.status) {
-			case 503:
+			case 403:
 				this.setState({
 					myTurn: undefined,
-					winner: undefined,
-					id: undefined,
-					isX: undefined,
-					message: "Partita non trovata!",
+					winner: !this.state.isX!,
 				});
 				break;
 			case 400:
@@ -228,7 +222,23 @@ class Board extends Component {
 						<button
 							className={`${styles.actionButton} button`}
 							onClick={() => {
-								// TODO: Give up button
+								if (
+									// eslint-disable-next-line no-alert
+									!confirm("Sei sicuro di volerti arrendere?") ||
+									!this.isPlaying()
+								)
+									return;
+								this.setState({
+									myTurn: undefined,
+									winner: this.state.isX,
+								});
+								fetch("/api/match", {
+									method: "DELETE",
+									headers: {
+										id: this.state.id.toString(),
+									},
+									keepalive: true,
+								}).catch(console.error);
 							}}
 						>
 							Arrenditi
