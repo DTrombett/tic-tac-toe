@@ -12,6 +12,7 @@
 	padding: 0;
 	text-align: center;
 	width: 68px;
+	user-select: none;
 }
 
 .square:hover {
