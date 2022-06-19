@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getPlaying, setIds, setPlaying } from "./match";
+import { getPlaying, ids, setPlaying } from "./match";
 
 let toReply: NextApiResponse | null = null;
 let callback: (() => void) | null = null;
@@ -7,7 +7,9 @@ let callback: (() => void) | null = null;
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
 	if (toReply) {
 		setPlaying();
-		const ids = setIds();
+		ids[0] = Math.random();
+		do ids[1] = Math.random();
+		while (ids[0] === ids[1]);
 		toReply.status(200).json({
 			id: ids[0],
 			x: true,

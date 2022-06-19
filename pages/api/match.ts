@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import EventEmitter from "node:events";
 import calculateWinner from "../../lib/calculateWinner";
 
-const ids: [number | null, number | null] = [null, null];
+EventEmitter.defaultMaxListeners = 4;
+
+export const ids: [number | null, number | null] = [null, null];
 const squares: (boolean | null)[] = new Array(9).fill(null);
 let playing = false;
 let nextPlayer = false;
@@ -9,12 +12,6 @@ let toReply: NextApiResponse | null = null;
 let pendingSquare: number | null = null;
 let callback: (() => void) | null = null;
 
-export const setIds = () => {
-	ids[0] = Math.random();
-	do ids[1] = Math.random();
-	while (ids[0] === ids[1]);
-	return ids;
-};
 export const getPlaying = () => playing;
 export const setPlaying = () => {
 	playing = true;
