@@ -91,7 +91,13 @@ class Board extends Component {
 		const squares = this.state.squares.slice();
 
 		squares[i] = !this.state.isX;
-		if (calculateWinner(squares) === null)
+		if (!squares.includes(null))
+			this.setState({
+				squares,
+				myTurn: undefined,
+				winner: null,
+			});
+		else if (calculateWinner(squares) === null)
 			this.setState({
 				squares,
 				myTurn: false,
@@ -132,7 +138,7 @@ class Board extends Component {
 				<div className={styles.status}>
 					{this.isPlaying()
 						? this.state.myTurn
-							? "Tocca a te!"
+							? `Tocca a te (${this.state.isX ? "X" : "O"})!`
 							: "In attesa del tuo avversario..."
 						: this.isFinished()
 						? (this.state.winner === null
