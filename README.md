@@ -27,7 +27,7 @@ To check your Node.js version, run `node --version` in your terminal.
 
 ## Memory usage
 
-The game uses a maximum of 50MB of RAM for the server-side code while the client-side code uses around 20MB.
+The game uses around 40MB of RAM for the server-side code while the client-side code uses around 15MB.
 
 ## Contributing
 
