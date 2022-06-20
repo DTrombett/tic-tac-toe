@@ -18,7 +18,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			id: ids[1],
 			x: false,
 		});
-		if (callback) toReply.removeListener("close", callback);
+		if (callback) toReply.socket?.off("close", callback);
 		toReply = null;
 		return;
 	}

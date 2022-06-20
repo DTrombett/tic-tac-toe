@@ -31,7 +31,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		toReply?.status(200).json({
 			winner: !index,
 		});
-		if (callback) toReply?.removeListener("close", callback);
+		if (callback) toReply?.socket?.off("close", callback);
 		ids.fill(null);
 		squares.fill(null);
 		toReply = null;
@@ -94,7 +94,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		squares.fill(null);
 		playing = nextPlayer = false;
-		if (callback) toReply?.removeListener("close", callback);
+		if (callback) toReply?.socket?.off("close", callback);
 		toReply = null;
 		return;
 	}
@@ -106,7 +106,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			winner: null,
 			square: i,
 		});
-		if (callback) toReply?.removeListener("close", callback);
+		if (callback) toReply?.socket?.off("close", callback);
 		ids.fill(null);
 		squares.fill(null);
 		toReply = null;
@@ -119,7 +119,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 			square: i,
 		});
 	else pendingSquare = i;
-	if (callback) toReply?.removeListener("close", callback);
+	if (callback) toReply?.socket?.off("close", callback);
 	toReply = res;
 	req.socket.once(
 		"close",
