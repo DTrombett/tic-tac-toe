@@ -91,16 +91,17 @@ class Board extends Component {
 		const squares = this.state.squares.slice();
 
 		squares[i] = !this.state.isX;
-		if (!squares.includes(null))
+
+		if (calculateWinner(squares) === null)
+			this.setState({
+				squares,
+				myTurn: false,
+			});
+		else if (!squares.includes(null))
 			this.setState({
 				squares,
 				myTurn: undefined,
 				winner: null,
-			});
-		else if (calculateWinner(squares) === null)
-			this.setState({
-				squares,
-				myTurn: false,
 			});
 		else
 			this.setState({
