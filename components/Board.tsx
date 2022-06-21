@@ -4,6 +4,8 @@ import type { FinishedState, IdleState, PlayingState, State } from "../types";
 import styles from "./Board.module.css";
 import Square from "./Square";
 
+let controller: AbortController | undefined;
+
 class Board extends Component {
 	state: State<FinishedState | IdleState | PlayingState>;
 
@@ -184,6 +186,7 @@ class Board extends Component {
 								});
 								fetch("/api/matchmaking", {
 									keepalive: true,
+									signal: (controller = new AbortController()).signal,
 								})
 									.then((res) => {
 										if (res.status === 200) return res.json();
@@ -249,6 +252,19 @@ class Board extends Component {
 							}}
 						>
 							Arrenditi
+						</button>
+					)}
+					{this.state.matchmaking && (
+						<button
+							className={`${styles.actionButton} button`}
+							onClick={() => {
+								this.setState({
+									matchmaking: undefined,
+								});
+								controller?.abort();
+							}}
+						>
+							Cancella
 						</button>
 					)}
 				</div>
