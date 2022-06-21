@@ -14,6 +14,10 @@ class Board extends Component {
 		this.state = {
 			squares: Array(9).fill(null),
 		};
+		if (typeof window !== "undefined")
+			window.addEventListener("beforeunload", () => {
+				controller?.abort();
+			});
 	}
 
 	setState(state: Partial<Board["state"]>) {
