@@ -21,7 +21,7 @@
 		"prettier": "prettier --write {components,lib,pages}/**/*.{js,jsx,ts,tsx}"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome-free": "^6.1.1",
+		"@fortawesome/fontawesome-free": "^6.4.0",
 		"@fullhuman/postcss-purgecss": "^5.0.0",
 		"autoprefixer": "^10.4.7",
 		"bulma": "^0.9.3",
