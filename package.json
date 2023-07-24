@@ -33,7 +33,7 @@
 		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
-		"@next/eslint-plugin-next": "^13.4.4",
+		"@next/eslint-plugin-next": "^13.4.12",
 		"@tsconfig/node14": "^1.0.3",
 		"@types/node": "^16.18.35",
 		"@types/react": "^18.2.9",
